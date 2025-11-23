@@ -2,204 +2,279 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Asistente Virtual</title>
 <style>
-body { font-family: Arial, sans-serif; margin:0; }
+body { font-family: Arial; margin: 0; padding: 0; }
 #chatIcon {
-    position: fixed; bottom: 20px; right: 20px;
-    width: 60px; height: 60px; border-radius: 50%;
-    background: #007bff; color: white; font-size: 30px;
-    border: none; cursor: pointer; z-index: 1000;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #007bff;
+    color: white;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    text-align: center;
+    line-height: 60px;
+    font-size: 30px;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
 }
-#chatContainer {
-    display: none; position: fixed; bottom: 90px; right: 20px;
-    width: 350px; max-height: 500px; background: white;
-    border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-    flex-direction: column; overflow: hidden; z-index: 999;
+#chatBox {
+    position: fixed;
+    bottom: 90px;
+    right: 20px;
+    width: 400px;
+    max-height: 500px;
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    display: none;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.3);
 }
-#chatBox { flex:1; padding:15px; overflow-y:auto; max-height:400px; }
-.message { margin:10px 0; padding:10px; border-radius:8px; white-space: pre-line; }
-.bot { background:#e1f0ff; align-self:flex-start; }
-.user { background:#d1ffd1; align-self:flex-end; }
-#userInput { display:flex; border-top:1px solid #ccc; }
-#inputField { flex:1; padding:10px; border:none; }
-#sendBtn { padding:10px 20px; background:#007bff; color:white; border:none; cursor:pointer; }
-#sendBtn:hover { background:#0056b3; }
-.opcionBtn {
-    margin:5px 0; padding:8px 10px; background:#007bff;
-    color:white; border:none; border-radius:6px; cursor:pointer; width:100%; text-align:left;
-}
-.opcionBtn:hover { background:#0056b3; }
+#chatContent { flex: 1; padding: 10px; overflow-y: auto; }
+.message { margin: 5px 0; }
+.bot { color: blue; }
+.user { color: green; }
+#chatInput { display: flex; border-top: 1px solid #ccc; }
+#chatInput input { flex: 1; border: none; padding: 10px; outline: none; }
+#chatInput button { padding: 10px; border: none; background: #007bff; color: white; cursor: pointer; }
 </style>
 </head>
 <body>
 
-<button id="chatIcon">💬</button>
+<div id="chatIcon">💬</div>
 
-<div id="chatContainer" style="display:flex; flex-direction:column;">
-    <div id="chatBox"></div>
-    <div id="userInput">
-        <input type="text" id="inputField" placeholder="Escribí tu mensaje...">
+<div id="chatBox">
+    <div id="chatContent"></div>
+    <div id="chatInput">
+        <input type="text" id="userInput" placeholder="Escribí tu respuesta aquí..."/>
         <button id="sendBtn">Enviar</button>
     </div>
 </div>
 
 <script>
-function normalizar(texto){
-    return texto.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").trim();
+// Mostrar/ocultar chat
+const chatIcon = document.getElementById("chatIcon");
+const chatBox = document.getElementById("chatBox");
+chatIcon.onclick = () => {
+    chatBox.style.display = chatBox.style.display === "flex" ? "none" : "flex";
+    chatBox.style.flexDirection = "column";
+    input.focus();
+};
+
+// Función para mostrar mensaje con salto de línea HTML
+function mostrarMensaje(texto, tipo="bot") {
+    const div = document.createElement("div");
+    div.className = `message ${tipo}`;
+    div.innerHTML = texto.replace(/\n/g, "<br>");
+    chatContent.appendChild(div);
+    chatContent.scrollTop = chatContent.scrollHeight;
 }
 
-// Árbol simplificado basado en tu código Python
+// Árbol conversacional completo
 const chatTree = {
-    "Inicio": {mensaje:"¡Hola! Bienvenido al soporte. ¿Cómo podemos ayudarte hoy?", opciones:[
-        {texto:"Problemas con el sistema", nodo:"Problemas_sistema", numero:"1"},
-        {texto:"Consultas sobre servicios", nodo:"Consultas_servicios", numero:"2"},
-        {texto:"Promociones", nodo:"Promociones", numero:"3"},
-        {texto:"Con un operador", nodo:"Operador", numero:"4"}
-    ]},
-    "Problemas_sistema": {mensaje:"Vamos a intentar solucionar el problema con el sistema. ¿Se carga la página correctamente?", opciones:[
-        {texto:"Sí", nodo:"Problemas_sistema_si", numero:"1"},
-        {texto:"No", nodo:"Verificar_conexion", numero:"2"}
-    ]},
-    "Problemas_sistema_si": {mensaje:"Me indicas en qué más te puedo ayudar", opciones:[]},
-    "Verificar_conexion": {mensaje:"Por favor, verifica que estés conectado a internet. ¿Funcionó?", opciones:[
-        {texto:"Sí", nodo:"Problemas_sistema_si", numero:"1"},
-        {texto:"No", nodo:"Probar_otro_navegador", numero:"2"}
-    ]},
-    "Probar_otro_navegador": {mensaje:"Intenta abrir el sistema en otro navegador. ¿Funcionó?", opciones:[
-        {texto:"Sí", nodo:"Problemas_sistema_si", numero:"1"},
-        {texto:"No", nodo:"Derivar_operador", numero:"2"}
-    ]},
-    "Derivar_operador": {mensaje:"Te voy a derivar a un operador. Por favor, espera un momento.", opciones:[], reinicio:true},
-    "Consultas_servicios": {mensaje:"¿Qué consulta deseas realizar?", opciones:[
-        {texto:"Realizar búsqueda de un servicio", nodo:"Busqueda_servicio", numero:"1"},
-        {texto:"Procesar pago", nodo:"Procesar_pago", numero:"2"},
-        {texto:"Servicios disponibles por rubro", nodo:"Servicios_rubro", numero:"3"}
-    ]},
-    "Busqueda_servicio": {mensaje:"Verifica el buscador e ingresa el nombre del servicio que deseas abonar. ¿Lograste encontrar el servicio?", opciones:[
-        {texto:"Sí", nodo:"Consulta_servicio_si", numero:"1"},
-        {texto:"No", nodo:"Derivar_operador", numero:"2"}
-    ]},
-    "Consulta_servicio_si": {mensaje:"Me indicas en qué más te puedo ayudar", opciones:[]},
-    "Procesar_pago": {mensaje:"Al momento de completar los campos, presioná el botón de procesar pago. ¿Lograste realizar el pago?", opciones:[
-        {texto:"Sí", nodo:"Consulta_servicio_si", numero:"1"},
-        {texto:"No", nodo:"Derivar_operador", numero:"2"}
-    ]},
-    "Servicios_rubro": {mensaje:"Estos son los servicios disponibles para tu local comercial. ¿Lograste verificar el servicio que deseas abonar?", opciones:[
-        {texto:"Sí", nodo:"Consulta_servicio_si", numero:"1"},
-        {texto:"No", nodo:"Derivar_operador", numero:"2"}
-    ]},
-    "Promociones": {mensaje:"Selecciona el tipo de promoción que deseas consultar:", opciones:[
-        {texto:"Promociones vigentes", nodo:"Promociones_vigentes", numero:"1"},
-        {texto:"Cómo participar en promociones", nodo:"Participar_promociones", numero:"2"}
-    ]},
-    "Promociones_vigentes": {mensaje:"Actualmente tenemos las siguientes promociones activas. ¿Tenés alguna duda o consulta más referente a las promociones?", opciones:[
-        {texto:"Sí", nodo:"Consulta_servicio_si", numero:"1"},
-        {texto:"No", nodo:"Encuesta_final", numero:"2"}
-    ]},
-    "Participar_promociones": {mensaje:"Para participar, sigue estos pasos. ¿Tenés alguna duda o consulta más referente a las promociones?", opciones:[
-        {texto:"Sí", nodo:"Consulta_servicio_si", numero:"1"},
-        {texto:"No", nodo:"Encuesta_final", numero:"2"}
-    ]},
-    "Operador": {mensaje:"Te voy a derivar a un operador. Por favor, espera un momento.", opciones:[], reinicio:true},
-    "Encuesta_final": {mensaje:"Por favor, califica tu experiencia del 1 al 5, donde 1 es muy insatisfecho y 5 muy satisfecho.", opciones:[
-        {texto:"1", nodo:null, numero:"1"},
-        {texto:"2", nodo:null, numero:"2"},
-        {texto:"3", nodo:null, numero:"3"},
-        {texto:"4", nodo:null, numero:"4"},
-        {texto:"5", nodo:null, numero:"5"}
-    ], reinicio:true}
+    "Inicio": {
+        "mensaje": `¡Hola! Bienvenido al soporte. ¿Cómo podemos ayudarte hoy?
+1. Problemas con el sistema
+2. Consultas sobre servicios
+3. Promociones
+4. Hablar con un agente humano`,
+        "opciones": {
+            "1": "Problemas_sistema",
+            "problemas": "Problemas_sistema",
+            "sistema": "Problemas_sistema",
+            "2": "Consultas_servicios",
+            "consultas": "Consultas_servicios",
+            "3": "Promociones",
+            "promociones": "Promociones",
+            "4": "Hablar_agente",
+            "agente": "Hablar_agente",
+            "humano": "Hablar_agente"
+        }
+    },
+    "Problemas_sistema": {
+        "mensaje": `Vamos a intentar solucionar el problema con el sistema. ¿Se carga la página correctamente?
+1. Sí
+2. No`,
+        "opciones": {
+            "1": "Problemas_sistema_si",
+            "si": "Problemas_sistema_si",
+            "sí": "Problemas_sistema_si",
+            "2": "Verificar_conexion",
+            "no": "Verificar_conexion"
+        }
+    },
+    "Problemas_sistema_si": {
+        "mensaje": `Me indicas en qué más te puedo ayudar
+1. Volver al inicio`,
+        "opciones": {
+            "1": "Inicio",
+            "inicio": "Inicio"
+        }
+    },
+    "Verificar_conexion": {
+        "mensaje": `Por favor, verifica tu conexión. ¿Funcionó?
+1. Sí
+2. No`,
+        "opciones": {
+            "1": "Problemas_sistema_si",
+            "si": "Problemas_sistema_si",
+            "sí": "Problemas_sistema_si",
+            "2": "Derivar_operador",
+            "no": "Derivar_operador"
+        }
+    },
+    "Derivar_operador": {
+        "mensaje": `Te voy a derivar a un operador. Por favor, espera un momento.
+1. Volver al inicio`,
+        "opciones": {
+            "1": "Inicio",
+            "inicio": "Inicio"
+        }
+    },
+    "Consultas_servicios": {
+        "mensaje": `¿Qué consulta deseas realizar?
+1. Realizar búsqueda de un servicio en el sistema
+2. Procesar pago
+3. Servicios disponibles por rubro`,
+        "opciones": {
+            "1": "Busqueda_servicio",
+            "busqueda": "Busqueda_servicio",
+            "búsqueda": "Busqueda_servicio",
+            "2": "Procesar_pago",
+            "pago": "Procesar_pago",
+            "3": "Servicios_rubro",
+            "rubros": "Servicios_rubro"
+        }
+    },
+    "Busqueda_servicio": {
+        "mensaje": `Verifica el buscador e ingresa el nombre del servicio que deseas abonar. ¿Lograste encontrar el servicio?
+1. Sí
+2. No`,
+        "opciones": {
+            "1": "Consulta_final",
+            "si": "Consulta_final",
+            "sí": "Consulta_final",
+            "2": "Derivar_operador",
+            "no": "Derivar_operador"
+        }
+    },
+    "Procesar_pago": {
+        "mensaje": `Al momento de completar los campos, presioná el botón de procesar pago. ¿Lograste realizar el pago?
+1. Sí
+2. No`,
+        "opciones": {
+            "1": "Consulta_final",
+            "si": "Consulta_final",
+            "sí": "Consulta_final",
+            "2": "Derivar_operador",
+            "no": "Derivar_operador"
+        }
+    },
+    "Servicios_rubro": {
+        "mensaje": `Estos son los servicios disponibles para tu local comercial. ¿Lograste verificar el servicio que deseas abonar?
+1. Sí
+2. No`,
+        "opciones": {
+            "1": "Consulta_final",
+            "si": "Consulta_final",
+            "sí": "Consulta_final",
+            "2": "Derivar_operador",
+            "no": "Derivar_operador"
+        }
+    },
+    "Promociones": {
+        "mensaje": `Selecciona el tipo de promoción que deseas consultar:
+1. Promociones vigentes
+2. Cómo participar en promociones`,
+        "opciones": {
+            "1": "Promociones_vigentes",
+            "vigentes": "Promociones_vigentes",
+            "2": "Participar_promociones",
+            "participar": "Participar_promociones"
+        }
+    },
+    "Promociones_vigentes": {
+        "mensaje": `Actualmente tenemos las siguientes promociones activas. ¿Tenés alguna duda o consulta más referente a las promociones?
+1. Sí
+2. No`,
+        "opciones": {
+            "1": "Consulta_final",
+            "2": "Encuesta"
+        }
+    },
+    "Participar_promociones": {
+        "mensaje": `Para participar, sigue estos pasos. ¿Tenés alguna duda o consulta más referente a las promociones?
+1. Sí
+2. No`,
+        "opciones": {
+            "1": "Consulta_final",
+            "2": "Encuesta"
+        }
+    },
+    "Hablar_agente": {
+        "mensaje": `Te voy a derivar a un operador. Por favor, espera un momento.
+1. Volver al inicio`,
+        "opciones": {
+            "1": "Inicio",
+            "inicio": "Inicio"
+        }
+    },
+    "Consulta_final": {
+        "mensaje": `¿Tenés alguna otra duda o consulta?
+1. Sí
+2. No`,
+        "opciones": {
+            "1": "Inicio",
+            "2": "Encuesta"
+        }
+    },
+    "Encuesta": {
+        "mensaje": `Por favor, califica tu experiencia del 1 al 5, donde 1 es muy insatisfecho y 5 muy satisfecho.`,
+        "opciones": {
+            "1": "FIN",
+            "2": "FIN",
+            "3": "FIN",
+            "4": "FIN",
+            "5": "FIN"
+        }
+    },
+    "FIN": {
+        "mensaje": `¡Gracias por tu tiempo! Fin de la interacción.`,
+        "opciones": {}
+    }
 };
 
-const sinonimos={
-    "Problemas_sistema":["sistema","problema","error","fallo","issue","1"],
-    "Consultas_servicios":["servicio","pago","consulta","2"],
-    "Promociones":["promocion","oferta","premio","sorteo","3"],
-    "Operador":["operador","agente","humano","4"]
-};
+// Variables
+let nodoActual = "Inicio";
+const chatContent = document.getElementById("chatContent");
+const input = document.getElementById("userInput");
+const btnEnviar = document.getElementById("sendBtn");
 
-let nodoActual="Inicio";
-const chatBox=document.getElementById("chatBox");
-const inputField=document.getElementById("inputField");
-const sendBtn=document.getElementById("sendBtn");
-const chatIcon=document.getElementById("chatIcon");
-const chatContainer=document.getElementById("chatContainer");
+// Enviar mensaje
+function enviarMensaje() {
+    const texto = input.value.trim().toLowerCase();
+    if (!texto) return;
+    mostrarMensaje(input.value, "user");
+    input.value = "";
 
-function mostrarMensaje(texto,clase="bot"){
-    const div=document.createElement("div");
-    div.className=`message ${clase}`;
-    div.textContent=texto;
-    chatBox.appendChild(div);
-    chatBox.scrollTop = chatBox.scrollHeight;
-}
-
-function mostrarOpciones(opciones){
-    opciones.forEach(opcion=>{
-        const btn=document.createElement("button");
-        btn.textContent=opcion.numero+") "+opcion.texto;
-        btn.className="opcionBtn";
-        btn.onclick=()=>avanzarNodo(opcion.nodo);
-        chatBox.appendChild(btn);
-    });
-}
-
-function avanzarNodo(nodo){
-    if(!nodo){ reiniciarChat(); return; }
-    nodoActual=nodo;
-    mostrarMensaje(chatTree[nodo].mensaje,"bot");
-    document.querySelectorAll(".opcionBtn").forEach(b=>b.remove());
-    if(chatTree[nodo].opciones) mostrarOpciones(chatTree[nodo].opciones);
-    if(chatTree[nodo].reinicio) setTimeout(reiniciarChat,2500);
-}
-
-function reiniciarChat(){
-    nodoActual="Inicio";
-    chatBox.innerHTML="";
-    mostrarMensaje(chatTree[nodoActual].mensaje,"bot");
-    mostrarOpciones(chatTree[nodoActual].opciones);
-}
-
-function procesarMensaje(texto){
-    mostrarMensaje(texto,"user");
-    texto=normalizar(texto);
-    let encontrado=false;
-
-    // Buscar sinónimos
-    for(let nodo in sinonimos){
-        for(let palabra of sinonimos[nodo]){
-            if(texto.includes(palabra)){
-                avanzarNodo(nodo);
-                encontrado=true; break;
-            }
-        }
-        if(encontrado) break;
-    }
-
-    // Buscar por número de opción
-    if(!encontrado){
-        const opciones = chatTree[nodoActual].opciones || [];
-        for(let opcion of opciones){
-            if(texto===opcion.numero){
-                avanzarNodo(opcion.nodo);
-                encontrado=true; break;
-            }
-        }
-    }
-
-    if(!encontrado){
-        mostrarMensaje("No entendí tu respuesta. Seleccioná un botón o escribí una palabra clave.","bot");
+    const nodo = chatTree[nodoActual];
+    if (nodo.opciones[texto]) {
+        nodoActual = nodo.opciones[texto];
+        mostrarMensaje(chatTree[nodoActual].mensaje);
+    } else {
+        mostrarMensaje("No entendí tu respuesta. Escribí el número o palabra clave de la opción.", "bot");
     }
 }
 
-// Inicializar
+// Asignar evento al botón
+btnEnviar.onclick = enviarMensaje;
+
+// Iniciar chat
 mostrarMensaje(chatTree[nodoActual].mensaje);
-mostrarOpciones(chatTree[nodoActual].opciones);
-
-// Eventos
-sendBtn.addEventListener("click",()=>{if(inputField.value.trim()!==""){procesarMensaje(inputField.value); inputField.value="";}});
-inputField.addEventListener("keypress",(e)=>{if(e.key==="Enter" && inputField.value.trim()!==""){procesarMensaje(inputField.value); inputField.value="";}});
-chatIcon.addEventListener("click",()=>{chatContainer.style.display=chatContainer.style.display==="flex"?"none":"flex";});
 </script>
 
 </body>
