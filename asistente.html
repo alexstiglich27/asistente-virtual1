@@ -6,7 +6,7 @@
 <style>
 body { font-family: Arial; margin: 0; padding: 0; }
 
-/* Chat flotante */
+/* Chat flotante (TU CÓDIGO ORIGINAL, NO TOCAR) */
 #chatIcon {
     position: fixed;
     bottom: 20px;
@@ -44,34 +44,45 @@ body { font-family: Arial; margin: 0; padding: 0; }
 #chatInput input { flex: 1; border: none; padding: 10px; outline: none; }
 #chatInput button { padding: 10px; border: none; background: #007bff; color: white; cursor: pointer; }
 
-/* Bloque adicional (texto / imágenes) */
-#promociones {
-    position: fixed;
-    top: 20px;
-    left: 20px;
-    width: 300px;
-    background: #fff;
-    border: 1px solid #ccc;
+/* BLOQUE ADICIONAL CON TEXTO/IMÁGENES */
+#contenidoExtra {
+    position: relative;
+    max-width: 800px;
+    margin: 50px auto;
+    padding: 20px;
+    background: #f9f9f9;
     border-radius: 10px;
-    padding: 10px;
     box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-    z-index: 999;
 }
-#promociones h3 { margin-top: 0; }
-#promociones img { width: 100%; margin-bottom: 10px; border-radius: 5px; }
+#contenidoExtra h2 {
+    margin-top: 0;
+    text-align: center;
+}
+#contenidoExtra img {
+    display: block;
+    width: 100%;
+    max-width: 350px;
+    margin: 10px auto;
+    border-radius: 8px;
+}
+#contenidoExtra p {
+    text-align: center;
+    font-size: 16px;
+}
 </style>
 </head>
 <body>
 
-<!-- Bloque adicional con imágenes/texto -->
-<div id="promociones">
-    <h3>¡Ofertas del mes!</h3>
-    <p>Consulta nuestras promociones y beneficios exclusivos.</p>
-    <img src="https://via.placeholder.com/250x100?text=Promo+1" alt="Promoción 1">
-    <img src="https://via.placeholder.com/250x100?text=Promo+2" alt="Promoción 2">
+<!-- BLOQUE ADICIONAL: TEXTO E IMÁGENES -->
+<div id="contenidoExtra">
+    <h2>¡Bienvenido a nuestras promociones!</h2>
+    <p>Mirá las ofertas que tenemos para vos este mes.</p>
+    <img src="https://via.placeholder.com/350x150?text=Promo+1" alt="Promoción 1">
+    <img src="https://via.placeholder.com/350x150?text=Promo+2" alt="Promoción 2">
+    <p>No te pierdas nuestras novedades y beneficios exclusivos.</p>
 </div>
 
-<!-- Chat flotante (tu código original intacto) -->
+<!-- CHAT FLOTANTE (TU CÓDIGO ORIGINAL, NO TOCAR) -->
 <div id="chatIcon">💬</div>
 <div id="chatBox">
     <div id="chatContent"></div>
@@ -82,7 +93,7 @@ body { font-family: Arial; margin: 0; padding: 0; }
 </div>
 
 <script>
-// Mostrar/ocultar chat
+// CHAT FLOTANTE (TU CÓDIGO ORIGINAL, NO TOCAR)
 const chatIcon = document.getElementById("chatIcon");
 const chatBox = document.getElementById("chatBox");
 chatIcon.onclick = () => {
@@ -91,7 +102,6 @@ chatIcon.onclick = () => {
     input.focus();
 };
 
-// Función para mostrar mensaje con salto de línea HTML
 function mostrarMensaje(texto, tipo="bot") {
     const div = document.createElement("div");
     div.className = `message ${tipo}`;
@@ -100,7 +110,6 @@ function mostrarMensaje(texto, tipo="bot") {
     chatContent.scrollTop = chatContent.scrollHeight;
 }
 
-// Árbol conversacional completo (tu código original)
 const chatTree = {
     "Inicio": {
         "mensaje": `¡Hola! Bienvenido al soporte. ¿Cómo podemos ayudarte hoy?
@@ -125,168 +134,80 @@ const chatTree = {
         "mensaje": `Vamos a intentar solucionar el problema con el sistema. ¿Se carga la página correctamente?
 1. Sí
 2. No`,
-        "opciones": {
-            "1": "Problemas_sistema_si",
-            "si": "Problemas_sistema_si",
-            "sí": "Problemas_sistema_si",
-            "2": "Verificar_conexion",
-            "no": "Verificar_conexion"
-        }
+        "opciones": { "1": "Problemas_sistema_si", "si": "Problemas_sistema_si", "sí": "Problemas_sistema_si", "2": "Verificar_conexion", "no": "Verificar_conexion" }
     },
     "Problemas_sistema_si": {
         "mensaje": `Me indicas en qué más te puedo ayudar
 1. Volver al inicio`,
-        "opciones": {
-            "1": "Inicio",
-            "inicio": "Inicio"
-        }
+        "opciones": { "1": "Inicio", "inicio": "Inicio" }
     },
     "Verificar_conexion": {
         "mensaje": `Por favor, verifica tu conexión. ¿Funcionó?
 1. Sí
 2. No`,
-        "opciones": {
-            "1": "Problemas_sistema_si",
-            "si": "Problemas_sistema_si",
-            "sí": "Problemas_sistema_si",
-            "2": "Derivar_operador",
-            "no": "Derivar_operador"
-        }
+        "opciones": { "1": "Problemas_sistema_si", "si": "Problemas_sistema_si", "sí": "Problemas_sistema_si", "2": "Derivar_operador", "no": "Derivar_operador" }
     },
     "Derivar_operador": {
         "mensaje": `Te voy a derivar a un operador. Por favor, espera un momento.
 1. Volver al inicio`,
-        "opciones": {
-            "1": "Inicio",
-            "inicio": "Inicio"
-        }
+        "opciones": { "1": "Inicio", "inicio": "Inicio" }
     },
     "Consultas_servicios": {
         "mensaje": `¿Qué consulta deseas realizar?
 1. Realizar búsqueda de un servicio en el sistema
 2. Procesar pago
 3. Servicios disponibles por rubro`,
-        "opciones": {
-            "1": "Busqueda_servicio",
-            "busqueda": "Busqueda_servicio",
-            "búsqueda": "Busqueda_servicio",
-            "2": "Procesar_pago",
-            "pago": "Procesar_pago",
-            "3": "Servicios_rubro",
-            "rubros": "Servicios_rubro"
-        }
+        "opciones": { "1": "Busqueda_servicio", "busqueda": "Busqueda_servicio", "búsqueda": "Busqueda_servicio", "2": "Procesar_pago", "pago": "Procesar_pago", "3": "Servicios_rubro", "rubros": "Servicios_rubro" }
     },
     "Busqueda_servicio": {
         "mensaje": `Verifica el buscador e ingresa el nombre del servicio que deseas abonar. ¿Lograste encontrar el servicio?
 1. Sí
 2. No`,
-        "opciones": {
-            "1": "Consulta_final",
-            "si": "Consulta_final",
-            "sí": "Consulta_final",
-            "2": "Derivar_operador",
-            "no": "Derivar_operador"
-        }
+        "opciones": { "1": "Consulta_final", "si": "Consulta_final", "sí": "Consulta_final", "2": "Derivar_operador", "no": "Derivar_operador" }
     },
     "Procesar_pago": {
         "mensaje": `Al momento de completar los campos, presioná el botón de procesar pago. ¿Lograste realizar el pago?
 1. Sí
 2. No`,
-        "opciones": {
-            "1": "Consulta_final",
-            "si": "Consulta_final",
-            "sí": "Consulta_final",
-            "2": "Derivar_operador",
-            "no": "Derivar_operador"
-        }
+        "opciones": { "1": "Consulta_final", "si": "Consulta_final", "sí": "Consulta_final", "2": "Derivar_operador", "no": "Derivar_operador" }
     },
     "Servicios_rubro": {
         "mensaje": `Estos son los servicios disponibles para tu local comercial. ¿Lograste verificar el servicio que deseas abonar?
 1. Sí
 2. No`,
-        "opciones": {
-            "1": "Consulta_final",
-            "si": "Consulta_final",
-            "sí": "Consulta_final",
-            "2": "Derivar_operador",
-            "no": "Derivar_operador"
-        }
+        "opciones": { "1": "Consulta_final", "si": "Consulta_final", "sí": "Consulta_final", "2": "Derivar_operador", "no": "Derivar_operador" }
     },
     "Promociones": {
         "mensaje": `Selecciona el tipo de promoción que deseas consultar:
 1. Promociones vigentes
 2. Cómo participar en promociones`,
-        "opciones": {
-            "1": "Promociones_vigentes",
-            "vigentes": "Promociones_vigentes",
-            "2": "Participar_promociones",
-            "participar": "Participar_promociones"
-        }
+        "opciones": { "1": "Promociones_vigentes", "vigentes": "Promociones_vigentes", "2": "Participar_promociones", "participar": "Participar_promociones" }
     },
-    "Promociones_vigentes": {
-        "mensaje": `Actualmente tenemos las siguientes promociones activas. ¿Tenés alguna duda o consulta más referente a las promociones?
+    "Promociones_vigentes": { "mensaje": `Actualmente tenemos las siguientes promociones activas. ¿Tenés alguna duda o consulta más referente a las promociones?
 1. Sí
-2. No`,
-        "opciones": {
-            "1": "Consulta_final",
-            "2": "Encuesta"
-        }
-    },
-    "Participar_promociones": {
-        "mensaje": `Para participar, sigue estos pasos. ¿Tenés alguna duda o consulta más referente a las promociones?
+2. No`, "opciones": { "1": "Consulta_final", "2": "Encuesta" } },
+    "Participar_promociones": { "mensaje": `Para participar, sigue estos pasos. ¿Tenés alguna duda o consulta más referente a las promociones?
 1. Sí
-2. No`,
-        "opciones": {
-            "1": "Consulta_final",
-            "2": "Encuesta"
-        }
-    },
-    "Hablar_agente": {
-        "mensaje": `Te voy a derivar a un operador. Por favor, espera un momento.
-1. Volver al inicio`,
-        "opciones": {
-            "1": "Inicio",
-            "inicio": "Inicio"
-        }
-    },
-    "Consulta_final": {
-        "mensaje": `¿Tenés alguna otra duda o consulta?
+2. No`, "opciones": { "1": "Consulta_final", "2": "Encuesta" } },
+    "Hablar_agente": { "mensaje": `Te voy a derivar a un operador. Por favor, espera un momento.
+1. Volver al inicio`, "opciones": { "1": "Inicio", "inicio": "Inicio" } },
+    "Consulta_final": { "mensaje": `¿Tenés alguna otra duda o consulta?
 1. Sí
-2. No`,
-        "opciones": {
-            "1": "Inicio",
-            "2": "Encuesta"
-        }
-    },
-    "Encuesta": {
-        "mensaje": `Por favor, califica tu experiencia del 1 al 5, donde 1 es muy insatisfecho y 5 muy satisfecho.`,
-        "opciones": {
-            "1": "FIN",
-            "2": "FIN",
-            "3": "FIN",
-            "4": "FIN",
-            "5": "FIN"
-        }
-    },
-    "FIN": {
-        "mensaje": `¡Gracias por tu tiempo! Fin de la interacción.`,
-        "opciones": {}
-    }
+2. No`, "opciones": { "1": "Inicio", "2": "Encuesta" } },
+    "Encuesta": { "mensaje": `Por favor, califica tu experiencia del 1 al 5, donde 1 es muy insatisfecho y 5 muy satisfecho.`, "opciones": { "1": "FIN", "2": "FIN", "3": "FIN", "4": "FIN", "5": "FIN" } },
+    "FIN": { "mensaje": `¡Gracias por tu tiempo! Fin de la interacción.`, "opciones": {} }
 };
 
-// Variables
 let nodoActual = "Inicio";
 const chatContent = document.getElementById("chatContent");
 const input = document.getElementById("userInput");
 const btnEnviar = document.getElementById("sendBtn");
 
-// Enviar mensaje
 function enviarMensaje() {
     const texto = input.value.trim().toLowerCase();
     if (!texto) return;
     mostrarMensaje(input.value, "user");
     input.value = "";
-
     const nodo = chatTree[nodoActual];
     if (nodo.opciones[texto]) {
         nodoActual = nodo.opciones[texto];
@@ -296,13 +217,9 @@ function enviarMensaje() {
     }
 }
 
-// Asignar evento al botón
 btnEnviar.onclick = enviarMensaje;
-
-// Iniciar chat
 mostrarMensaje(chatTree[nodoActual].mensaje);
 </script>
 
 </body>
 </html>
-
