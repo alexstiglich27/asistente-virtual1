@@ -81,7 +81,7 @@ const chatTree = {
 1. Problemas con el sistema
 2. Consultas sobre servicios
 3. Promociones
-4. Hablar con un agente humano`,
+4. Hablar con un operador`,
         "opciones": {
             "1": "Problemas_sistema",
             "problemas": "Problemas_sistema",
@@ -90,13 +90,13 @@ const chatTree = {
             "consultas": "Consultas_servicios",
             "3": "Promociones",
             "promociones": "Promociones",
-            "4": "Hablar_agente",
-            "agente": "Hablar_agente",
-            "humano": "Hablar_agente"
+            "4": "Hablar_operador",
+            "operador": "Hablar_operador",
+            "humano": "Hablar_operador"
         }
     },
     "Problemas_sistema": {
-        "mensaje": `Vamos a intentar solucionar el problema con el sistema. ¿Se carga la página correctamente?
+        "mensaje": `Vamos a intentar solucionar el problema con el sistema. ¿Podés recargar la página nuevamente?
 1. Sí
 2. No`,
         "opciones": {
@@ -110,6 +110,12 @@ const chatTree = {
     "Problemas_sistema_si": {
         "mensaje": `Me indicas en qué más te puedo ayudar
 1. Volver al inicio`,
+        "opciones": {
+            "1": "Inicio",
+            "inicio": "Inicio"
+        }
+    },
+2 Volver al Encuesta`,
         "opciones": {
             "1": "Inicio",
             "inicio": "Inicio"
@@ -130,6 +136,12 @@ const chatTree = {
     "Derivar_operador": {
         "mensaje": `Te voy a derivar a un operador. Por favor, espera un momento.
 1. Volver al inicio`,
+        "opciones": {
+            "1": "Inicio",
+            "inicio": "Inicio"
+        }
+    },
+2 Volver al Encuesta`,
         "opciones": {
             "1": "Inicio",
             "inicio": "Inicio"
@@ -198,7 +210,9 @@ const chatTree = {
         }
     },
     "Promociones_vigentes": {
-        "mensaje": `Actualmente tenemos las siguientes promociones activas. ¿Tenés alguna duda o consulta más referente a las promociones?
+        "mensaje": `Actualmente tenemos las siguientes promociones activas.
+        - Promoción Finde Año
+        ¿Tenés alguna duda o consulta más referente a las promociones?
 1. Sí
 2. No`,
         "opciones": {
@@ -207,7 +221,7 @@ const chatTree = {
         }
     },
     "Participar_promociones": {
-        "mensaje": `Para participar, sigue estos pasos. ¿Tenés alguna duda o consulta más referente a las promociones?
+        "mensaje": `Para participar solo debes transaccionar. ¿Tenés alguna duda o consulta más referente a las promociones?
 1. Sí
 2. No`,
         "opciones": {
@@ -215,7 +229,7 @@ const chatTree = {
             "2": "Encuesta"
         }
     },
-    "Hablar_agente": {
+    "Hablar_operador": {
         "mensaje": `Te voy a derivar a un operador. Por favor, espera un momento.
 1. Volver al inicio`,
         "opciones": {
@@ -279,3 +293,4 @@ mostrarMensaje(chatTree[nodoActual].mensaje);
 
 </body>
 </html>
+
