@@ -1,186 +1,160 @@
-# -*- coding: utf-8 -*-
-
-# Diccionario que representa todo el árbol conversacional
-chat_tree = {
-    "Inicio": {
-        "mensaje": "¡Hola! Bienvenido al soporte. ¿Cómo podemos ayudarte hoy?",
-        "opciones": {
-            "Problemas con el sistema": "Problemas_sistema",
-            "Consultas sobre servicios": "Consultas_servicios",
-            "Promociones": "Promociones",
-            "Hablar con un agente humano": "Hablar_agente"
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asistente Virtual</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
         }
-    },
-
-    # -------------------- PROBLEMAS CON EL SISTEMA --------------------
-    "Problemas_sistema": {
-        "mensaje": "Vamos a intentar solucionar el problema con el sistema. ¿Se carga la página correctamente?",
-        "opciones": {
-            "Sí": "Problemas_sistema_si",
-            "No": "Verificar_conexion"
+        #chatContainer {
+            background: #fff;
+            width: 90%;
+            max-width: 500px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
         }
-    },
-
-    "Problemas_sistema_si": {
-        "mensaje": "Me indicas en qué más te puedo ayudar",
-        "opciones": {}
-    },
-
-    "Verificar_conexion": {
-        "mensaje": "Por favor, verifica que estés conectado a internet. ¿Funcionó?",
-        "opciones": {
-            "Sí": "Problemas_sistema_si",
-            "No": "Probar_otro_navegador"
+        #chatBox {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            height: 400px;
         }
-    },
-
-    "Probar_otro_navegador": {
-        "mensaje": "Intenta abrir el sistema en otro navegador. ¿Funcionó?",
-        "opciones": {
-            "Sí": "Problemas_sistema_si",
-            "No": "Derivar_operador"
+        .message {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 8px;
         }
-    },
-
-    "Derivar_operador": {
-        "mensaje": "Te voy a derivar a un operador. Por favor, espera un momento.",
-        "opciones": {}
-    },
-
-    # -------------------- CONSULTAS SOBRE SERVICIOS --------------------
-    "Consultas_servicios": {
-        "mensaje": "¿Qué consulta deseas realizar?",
-        "opciones": {
-            "Realizar búsqueda de un servicio en el sistema": "Busqueda_servicio",
-            "Procesar pago": "Procesar_pago",
-            "Servicios disponibles por rubro": "Servicios_rubro"
+        .bot {
+            background: #e1f0ff;
+            align-self: flex-start;
         }
-    },
-
-    "Busqueda_servicio": {
-        "mensaje": "Verifica el buscador e ingresa el nombre del servicio que deseas abonar. ¿Lograste encontrar el servicio?",
-        "opciones": {
-            "Sí": "Consulta_servicio_si",
-            "No": "Derivar_operador"
+        .user {
+            background: #d1ffd1;
+            align-self: flex-end;
         }
-    },
-
-    "Consulta_servicio_si": {
-        "mensaje": "Me indicas en qué más te puedo ayudar",
-        "opciones": {}
-    },
-
-    "Procesar_pago": {
-        "mensaje": "Al momento de completar los campos, presioná el botón de procesar pago. ¿Lograste realizar el pago?",
-        "opciones": {
-            "Sí": "Consulta_servicio_si",
-            "No": "Derivar_operador"
+        #userInput {
+            display: flex;
+            border-top: 1px solid #ccc;
         }
-    },
-
-    "Servicios_rubro": {
-        "mensaje": "Estos son los servicios disponibles para tu local comercial. ¿Lograste verificar el servicio que deseas abonar?",
-        "opciones": {
-            "Sí": "Consulta_servicio_si",
-            "No": "Derivar_operador"
+        #inputField {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            font-size: 16px;
         }
-    },
-
-    # -------------------- PROMOCIONES --------------------
-    "Promociones": {
-        "mensaje": "Selecciona el tipo de promoción que deseas consultar:",
-        "opciones": {
-            "Promociones vigentes": "Promociones_vigentes",
-            "Cómo participar en promociones": "Participar_promociones"
+        #sendBtn {
+            padding: 10px 20px;
+            background: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
         }
-    },
-
-    "Promociones_vigentes": {
-        "mensaje": "Actualmente tenemos las siguientes promociones activas. ¿Tenés alguna duda o consulta más referente a las promociones?",
-        "opciones": {
-            "Sí": "Consulta_servicio_si",
-            "No": "Encuesta_final"
+        #sendBtn:hover {
+            background: #0056b3;
         }
-    },
+    </style>
+</head>
+<body>
+    <div id="chatContainer">
+        <div id="chatBox"></div>
+        <div id="userInput">
+            <input type="text" id="inputField" placeholder="Escribí tu mensaje...">
+            <button id="sendBtn">Enviar</button>
+        </div>
+    </div>
 
-    "Participar_promociones": {
-        "mensaje": "Para participar, sigue estos pasos. ¿Tenés alguna duda o consulta más referente a las promociones?",
-        "opciones": {
-            "Sí": "Consulta_servicio_si",
-            "No": "Encuesta_final"
+    <script>
+        // Árbol de conversación simplificado
+        const chatTree = {
+            "Inicio": {
+                mensaje: "¡Hola! Bienvenido al soporte. ¿Cómo podemos ayudarte hoy?\nOpciones: 1) Problemas con el sistema 2) Consultas sobre servicios 3) Promociones 4) Hablar con un agente humano",
+            },
+            "Problemas_sistema": { mensaje: "Vamos a intentar solucionar el problema con el sistema. ¿Se carga la página correctamente?" },
+            "Consultas_servicios": { mensaje: "¿Qué consulta deseas realizar? 1) Realizar búsqueda 2) Procesar pago 3) Servicios disponibles por rubro" },
+            "Promociones": { mensaje: "Selecciona el tipo de promoción que deseas consultar: 1) Promociones vigentes 2) Cómo participar en promociones" },
+            "Agente_humano": { mensaje: "Te voy a derivar a un operador. Por favor, espera un momento." },
+            "Fin": { mensaje: "Por favor, califica tu experiencia del 1 al 5, donde 1 es muy insatisfecho y 5 muy satisfecho." }
+        };
+
+        // Sinónimos para reconocer palabras
+        const sinonimos = {
+            "Problemas_sistema": ["sistema", "problema", "error", "fallo", "issue"],
+            "Consultas_servicios": ["servicio", "pago", "abonar", "consulta"],
+            "Promociones": ["promoción", "oferta", "premio", "sorteo"],
+            "Agente_humano": ["agente", "operador", "humano", "persona"]
+        };
+
+        let nodoActual = "Inicio";
+
+        const chatBox = document.getElementById("chatBox");
+        const inputField = document.getElementById("inputField");
+        const sendBtn = document.getElementById("sendBtn");
+
+        // Mostrar mensaje en el chat
+        function mostrarMensaje(texto, clase = "bot") {
+            const mensajeDiv = document.createElement("div");
+            mensajeDiv.className = `message ${clase}`;
+            mensajeDiv.textContent = texto;
+            chatBox.appendChild(mensajeDiv);
+            chatBox.scrollTop = chatBox.scrollHeight;
         }
-    },
 
-    # -------------------- AGENTE HUMANO --------------------
-    "Hablar_agente": {
-        "mensaje": "Te voy a derivar a un operador. Por favor, espera un momento.",
-        "opciones": {}
-    },
-
-    # -------------------- ENCUESTA FINAL --------------------
-    "Encuesta_final": {
-        "mensaje": "Por favor, califica tu experiencia del 1 al 5, donde 1 es muy insatisfecho y 5 muy satisfecho.",
-        "opciones": {
-            "1": None,
-            "2": None,
-            "3": None,
-            "4": None,
-            "5": None
+        // Avanzar al nodo
+        function avanzarNodo(nodo) {
+            nodoActual = nodo;
+            mostrarMensaje(chatTree[nodo].mensaje, "bot");
         }
-    }
-}
 
-# ----------------------------------------------------------------------
-# FUNCIÓN PRINCIPAL
-# ----------------------------------------------------------------------
+        // Procesar mensaje del usuario
+        function procesarMensaje(texto) {
+            mostrarMensaje(texto, "user");
+            texto = texto.toLowerCase();
+            let encontrado = false;
 
-def iniciar_chat(nodo_actual="Inicio"):
-    nodo = chat_tree[nodo_actual]
-    print("\nBot:", nodo["mensaje"])
+            for (let nodo in sinonimos) {
+                for (let palabra of sinonimos[nodo]) {
+                    if (texto.includes(palabra)) {
+                        avanzarNodo(nodo);
+                        encontrado = true;
+                        break;
+                    }
+                }
+                if (encontrado) break;
+            }
 
-    # Si hay opciones, mostrarlas
-    if nodo["opciones"]:
-        print("\nOpciones:")
-        for i, opcion in enumerate(nodo["opciones"], 1):
-            print(f"{i}. {opcion}")
+            if (!encontrado) {
+                mostrarMensaje("No entendí tu respuesta. Por favor escribí una palabra clave o número de opción.", "bot");
+            }
+        }
 
-        eleccion = input("\nTu respuesta: ").strip()
-        opciones_lista = list(nodo["opciones"].keys())
-        siguiente_nodo = None
+        // Inicializar chat
+        mostrarMensaje(chatTree[nodoActual].mensaje);
 
-        # Si ingresan un número
-        if eleccion.isdigit() and 1 <= int(eleccion) <= len(opciones_lista):
-            siguiente_nodo = nodo["opciones"][opciones_lista[int(eleccion)-1]]
+        // Enviar al presionar botón o Enter
+        sendBtn.addEventListener("click", () => {
+            if (inputField.value.trim() !== "") {
+                procesarMensaje(inputField.value);
+                inputField.value = "";
+            }
+        });
 
-        # Si ingresan el texto exacto
-        elif eleccion in nodo["opciones"]:
-            siguiente_nodo = nodo["opciones"][eleccion]
-
-        else:
-            print("Opción no válida, intenta de nuevo.")
-            iniciar_chat(nodo_actual)
-            return
-
-        if siguiente_nodo:
-            iniciar_chat(siguiente_nodo)
-        else:
-            print("\nFin de la interacción.")
-
-    else:
-        # Nodos que NO deben ofrecer volver al inicio
-        if nodo_actual in ["Hablar_agente", "Derivar_operador"]:
-            print("\nFin de la interacción.")
-            return
-
-        # Nodo sin opciones normal
-        respuesta = input("\n¿Querés volver al inicio? (sí/no): ").strip().lower()
-        if respuesta in ["sí", "si"]:
-            iniciar_chat("Inicio")
-        else:
-            print("\nFin de la interacción.")
-
-
-# Ejecutar el asistente
-if __name__ == "__main__":
-    iniciar_chat()
+        inputField.addEventListener("keypress", (e) => {
+            if (e.key === "Enter" && inputField.value.trim() !== "") {
+                procesarMensaje(inputField.value);
+                inputField.value = "";
+            }
+        });
+    </script>
+</body>
+</html>
 
