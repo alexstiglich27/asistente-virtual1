@@ -5,104 +5,90 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Asistente Virtual</title>
 <style>
-    body {
-        font-family: Arial, sans-serif;
-        background: #f4f4f4;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        margin: 0;
-        padding: 20px;
-    }
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
 
-    /* Contenedor de imágenes */
-    #imagenContainer {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 20px;
-        margin-bottom: 20px;
-    }
-    #imagenContainer img {
-        width: 200px;
-        height: 150px;
-        object-fit: cover;
-        border-radius: 10px;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-    }
+/* Contenido principal de la página */
+#contenido {
+    padding: 40px;
+    max-width: 800px;
+    margin: auto;
+}
 
-    #chatContainer {
-        background: #fff;
-        width: 90%;
-        max-width: 500px;
-        border-radius: 10px;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-        display: flex;
-        flex-direction: column;
-        overflow: hidden;
-    }
-    #chatBox {
-        flex: 1;
-        padding: 20px;
-        overflow-y: auto;
-        height: 400px;
-    }
-    .message {
-        margin: 10px 0;
-        padding: 10px;
-        border-radius: 8px;
-    }
-    .bot {
-        background: #e1f0ff;
-        align-self: flex-start;
-    }
-    .user {
-        background: #d1ffd1;
-        align-self: flex-end;
-    }
-    #userInput {
-        display: flex;
-        border-top: 1px solid #ccc;
-    }
-    #inputField {
-        flex: 1;
-        padding: 10px;
-        border: none;
-        font-size: 16px;
-    }
-    #sendBtn {
-        padding: 10px 20px;
-        background: #007bff;
-        color: white;
-        border: none;
-        cursor: pointer;
-    }
-    #sendBtn:hover {
-        background: #0056b3;
-    }
+h1 { color: #007bff; }
+p { font-size: 18px; margin-bottom: 20px; }
+
+/* Chat flotante */
+#chatIcon {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #007bff;
+    color: white;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    text-align: center;
+    line-height: 60px;
+    font-size: 30px;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    z-index: 1000;
+}
+
+#chatBox {
+    position: fixed;
+    bottom: 90px;
+    right: 20px;
+    width: 350px;
+    max-height: 500px;
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    display: none;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+    z-index: 1000;
+}
+
+#chatContent { flex: 1; padding: 10px; overflow-y: auto; }
+.message { margin: 5px 0; }
+.bot { color: blue; }
+.user { color: green; }
+
+#chatInput { display: flex; border-top: 1px solid #ccc; }
+#chatInput input { flex: 1; border: none; padding: 10px; outline: none; }
+#chatInput button { padding: 10px; border: none; background: #007bff; color: white; cursor: pointer; }
 </style>
 </head>
 <body>
 
-<!-- Contenedor de imágenes -->
-<div id="imagenContainer">
-    <img src="https://via.placeholder.com/200x150?text=Imagen+1" alt="Imagen 1">
-    <img src="https://via.placeholder.com/200x150?text=Imagen+2" alt="Imagen 2">
-    <img src="https://via.placeholder.com/200x150?text=Imagen+3" alt="Imagen 3">
+<div id="contenido">
+    <h1>Bienvenido a Nuestro Servicio</h1>
+    <p>Acá podés ver nuestras promociones, novedades y noticias importantes.</p>
+    <p>Agregá más secciones de texto, imágenes o banners promocionales según necesites.</p>
 </div>
 
-<!-- Chat -->
-<div id="chatContainer">
-    <div id="chatBox"></div>
-    <div id="userInput">
-        <input type="text" id="inputField" placeholder="Escribí tu mensaje...">
+<!-- Chat flotante -->
+<div id="chatIcon">💬</div>
+<div id="chatBox">
+    <div id="chatContent"></div>
+    <div id="chatInput">
+        <input type="text" id="userInput" placeholder="Escribí tu respuesta aquí...">
         <button id="sendBtn">Enviar</button>
     </div>
 </div>
 
 <script>
+// Árbol de conversación simplificado
 const chatTree = {
-    "Inicio": { mensaje: "¡Hola! Bienvenido al soporte. ¿Cómo podemos ayudarte hoy?\nOpciones: 1) Problemas con el sistema 2) Consultas sobre servicios 3) Promociones 4) Hablar con un agente humano" },
+    "Inicio": {
+        mensaje: "¡Hola! Bienvenido al soporte. ¿Cómo podemos ayudarte hoy?\nOpciones: 1) Problemas con el sistema 2) Consultas sobre servicios 3) Promociones 4) Hablar con un operador",
+    },
     "Problemas_sistema": { mensaje: "Vamos a intentar solucionar el problema con el sistema. ¿Se carga la página correctamente?" },
     "Consultas_servicios": { mensaje: "¿Qué consulta deseas realizar? 1) Realizar búsqueda 2) Procesar pago 3) Servicios disponibles por rubro" },
     "Promociones": { mensaje: "Selecciona el tipo de promoción que deseas consultar: 1) Promociones vigentes 2) Cómo participar en promociones" },
@@ -114,33 +100,43 @@ const sinonimos = {
     "Problemas_sistema": ["sistema", "problema", "error", "fallo", "issue"],
     "Consultas_servicios": ["servicio", "pago", "abonar", "consulta"],
     "Promociones": ["promoción", "oferta", "premio", "sorteo"],
-    "Agente_humano": ["agente", "operador", "humano", "persona"]
+    "Agente_humano": ["operador", "humano", "persona"]
 };
 
 let nodoActual = "Inicio";
+const chatContent = document.getElementById("chatContent");
+const input = document.getElementById("userInput");
+const btnEnviar = document.getElementById("sendBtn");
 
+// Mostrar/Ocultar chat
+const chatIcon = document.getElementById("chatIcon");
 const chatBox = document.getElementById("chatBox");
-const inputField = document.getElementById("inputField");
-const sendBtn = document.getElementById("sendBtn");
+chatIcon.onclick = () => {
+    chatBox.style.display = chatBox.style.display === "flex" ? "none" : "flex";
+    chatBox.style.flexDirection = "column";
+    input.focus();
+};
 
-function mostrarMensaje(texto, clase = "bot") {
-    const mensajeDiv = document.createElement("div");
-    mensajeDiv.className = `message ${clase}`;
-    mensajeDiv.textContent = texto;
-    chatBox.appendChild(mensajeDiv);
-    chatBox.scrollTop = chatBox.scrollHeight;
+// Función para mostrar mensaje
+function mostrarMensaje(texto, tipo="bot") {
+    const div = document.createElement("div");
+    div.className = `message ${tipo}`;
+    div.textContent = texto;
+    chatContent.appendChild(div);
+    chatContent.scrollTop = chatContent.scrollHeight;
 }
 
+// Avanzar nodo
 function avanzarNodo(nodo) {
     nodoActual = nodo;
     mostrarMensaje(chatTree[nodo].mensaje, "bot");
 }
 
+// Procesar mensaje
 function procesarMensaje(texto) {
     mostrarMensaje(texto, "user");
     texto = texto.toLowerCase();
     let encontrado = false;
-
     for (let nodo in sinonimos) {
         for (let palabra of sinonimos[nodo]) {
             if (texto.includes(palabra)) {
@@ -151,28 +147,29 @@ function procesarMensaje(texto) {
         }
         if (encontrado) break;
     }
-
     if (!encontrado) {
         mostrarMensaje("No entendí tu respuesta. Por favor escribí una palabra clave o número de opción.", "bot");
     }
 }
 
+// Inicializar chat
 mostrarMensaje(chatTree[nodoActual].mensaje);
 
-sendBtn.addEventListener("click", () => {
-    if (inputField.value.trim() !== "") {
-        procesarMensaje(inputField.value);
-        inputField.value = "";
+// Enviar mensaje
+btnEnviar.onclick = () => {
+    if (input.value.trim() !== "") {
+        procesarMensaje(input.value);
+        input.value = "";
     }
-});
-
-inputField.addEventListener("keypress", (e) => {
-    if (e.key === "Enter" && inputField.value.trim() !== "") {
-        procesarMensaje(inputField.value);
-        inputField.value = "";
+};
+input.addEventListener("keypress", (e) => {
+    if (e.key === "Enter" && input.value.trim() !== "") {
+        procesarMensaje(input.value);
+        input.value = "";
     }
 });
 </script>
+
 </body>
 </html>
 
