@@ -2,160 +2,177 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Asistente Virtual</title>
 <style>
-/* Estilos generales */
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background: #f4f4f4;
-}
+    body {
+        font-family: Arial, sans-serif;
+        background: #f4f4f4;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin: 0;
+        padding: 20px;
+    }
 
-/* Cabecera */
-header {
-    background: #007bff;
-    color: white;
-    padding: 20px;
-    text-align: center;
-}
+    /* Contenedor de imágenes */
+    #imagenContainer {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 20px;
+        margin-bottom: 20px;
+    }
+    #imagenContainer img {
+        width: 200px;
+        height: 150px;
+        object-fit: cover;
+        border-radius: 10px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    }
 
-/* Secciones principales */
-section {
-    background: white;
-    margin: 20px auto;
-    padding: 20px;
-    max-width: 900px;
-    border-radius: 10px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-}
-
-/* Chat flotante */
-#chatIcon {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background: #007bff;
-    color: white;
-    border-radius: 50%;
-    width: 60px;
-    height: 60px;
-    text-align: center;
-    line-height: 60px;
-    font-size: 30px;
-    cursor: pointer;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-}
-#chatBox {
-    position: fixed;
-    bottom: 90px;
-    right: 20px;
-    width: 400px;
-    max-height: 500px;
-    background: white;
-    border: 1px solid #ccc;
-    border-radius: 10px;
-    display: none;
-    flex-direction: column;
-    overflow: hidden;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.3);
-}
-#chatContent { flex: 1; padding: 10px; overflow-y: auto; }
-.message { margin: 5px 0; }
-.bot { color: blue; }
-.user { color: green; }
-#chatInput { display: flex; border-top: 1px solid #ccc; }
-#chatInput input { flex: 1; border: none; padding: 10px; outline: none; }
-#chatInput button { padding: 10px; border: none; background: #007bff; color: white; cursor: pointer; }
+    #chatContainer {
+        background: #fff;
+        width: 90%;
+        max-width: 500px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+    }
+    #chatBox {
+        flex: 1;
+        padding: 20px;
+        overflow-y: auto;
+        height: 400px;
+    }
+    .message {
+        margin: 10px 0;
+        padding: 10px;
+        border-radius: 8px;
+    }
+    .bot {
+        background: #e1f0ff;
+        align-self: flex-start;
+    }
+    .user {
+        background: #d1ffd1;
+        align-self: flex-end;
+    }
+    #userInput {
+        display: flex;
+        border-top: 1px solid #ccc;
+    }
+    #inputField {
+        flex: 1;
+        padding: 10px;
+        border: none;
+        font-size: 16px;
+    }
+    #sendBtn {
+        padding: 10px 20px;
+        background: #007bff;
+        color: white;
+        border: none;
+        cursor: pointer;
+    }
+    #sendBtn:hover {
+        background: #0056b3;
+    }
 </style>
 </head>
 <body>
 
-<header>
-    <h1>Bienvenido a Soporte Online</h1>
-    <p>Tu ayuda inmediata con nuestros servicios y promociones.</p>
-</header>
+<!-- Contenedor de imágenes -->
+<div id="imagenContainer">
+    <img src="https://via.placeholder.com/200x150?text=Imagen+1" alt="Imagen 1">
+    <img src="https://via.placeholder.com/200x150?text=Imagen+2" alt="Imagen 2">
+    <img src="https://via.placeholder.com/200x150?text=Imagen+3" alt="Imagen 3">
+</div>
 
-<section>
-    <h2>Servicios Disponibles</h2>
-    <p>Conoce todos los servicios que podés abonar desde nuestra plataforma:</p>
-    <ul>
-        <li>Pago de facturas</li>
-        <li>Recarga de servicios</li>
-        <li>Consulta de promociones</li>
-    </ul>
-    <img src="https://via.placeholder.com/800x200" alt="Servicios" style="width:100%; border-radius: 10px; margin-top:10px;">
-</section>
-
-<section>
-    <h2>Promociones</h2>
-    <p>Mirá nuestras ofertas y sorteos vigentes:</p>
-    <ul>
-        <li>Promoción 1: 10% de descuento en pagos en línea</li>
-        <li>Promoción 2: Sorteos mensuales de premios</li>
-    </ul>
-</section>
-
-<!-- Chat flotante -->
-<div id="chatIcon">💬</div>
-
-<div id="chatBox">
-    <div id="chatContent"></div>
-    <div id="chatInput">
-        <input type="text" id="userInput" placeholder="Escribí tu respuesta aquí..."/>
+<!-- Chat -->
+<div id="chatContainer">
+    <div id="chatBox"></div>
+    <div id="userInput">
+        <input type="text" id="inputField" placeholder="Escribí tu mensaje...">
         <button id="sendBtn">Enviar</button>
     </div>
 </div>
 
 <script>
-// Mostrar/ocultar chat
-const chatIcon = document.getElementById("chatIcon");
-const chatBox = document.getElementById("chatBox");
-const input = document.getElementById("userInput");
-chatIcon.onclick = () => {
-    chatBox.style.display = chatBox.style.display === "flex" ? "none" : "flex";
-    chatBox.style.flexDirection = "column";
-    input.focus();
+const chatTree = {
+    "Inicio": { mensaje: "¡Hola! Bienvenido al soporte. ¿Cómo podemos ayudarte hoy?\nOpciones: 1) Problemas con el sistema 2) Consultas sobre servicios 3) Promociones 4) Hablar con un agente humano" },
+    "Problemas_sistema": { mensaje: "Vamos a intentar solucionar el problema con el sistema. ¿Se carga la página correctamente?" },
+    "Consultas_servicios": { mensaje: "¿Qué consulta deseas realizar? 1) Realizar búsqueda 2) Procesar pago 3) Servicios disponibles por rubro" },
+    "Promociones": { mensaje: "Selecciona el tipo de promoción que deseas consultar: 1) Promociones vigentes 2) Cómo participar en promociones" },
+    "Agente_humano": { mensaje: "Te voy a derivar a un operador. Por favor, espera un momento." },
+    "Fin": { mensaje: "Por favor, califica tu experiencia del 1 al 5, donde 1 es muy insatisfecho y 5 muy satisfecho." }
 };
 
-// Función mostrar mensaje
-const chatContent = document.getElementById("chatContent");
-function mostrarMensaje(texto, tipo="bot") {
-    const div = document.createElement("div");
-    div.className = `message ${tipo}`;
-    div.innerHTML = texto.replace(/\n/g,"<br>");
-    chatContent.appendChild(div);
-    chatContent.scrollTop = chatContent.scrollHeight;
-}
-
-// Árbol conversacional resumido (podés pegar el tuyo completo)
-const chatTree = {
-    "Inicio": {
-        "mensaje": `¡Hola! Bienvenido al soporte. ¿Cómo podemos ayudarte hoy?\n1. Problemas con el sistema\n2. Consultas sobre servicios\n3. Promociones\n4. Con un operador`,
-        "opciones": {"1":"Problemas_sistema","problemas":"Problemas_sistema","sistema":"Problemas_sistema","2":"Consultas_servicios","consultas":"Consultas_servicios","3":"Promociones","promociones":"Promociones","4":"Hablar_agente","agente":"Hablar_agente"}
-    },
-    "Problemas_sistema": {"mensaje":"Vamos a intentar solucionar el problema con el sistema.\n1. Sí\n2. No","opciones":{"1":"Inicio","2":"Hablar_agente"}},
-    "Consultas_servicios": {"mensaje":"¿Qué consulta deseas realizar?\n1. Realizar búsqueda\n2. Procesar pago","opciones":{"1":"Inicio","2":"Inicio"}},
-    "Promociones": {"mensaje":"Selecciona el tipo de promoción\n1. Vigentes\n2. Cómo participar","opciones":{"1":"Inicio","2":"Inicio"}},
-    "Hablar_agente": {"mensaje":"Te voy a derivar a un operador. Por favor espera.\n1. Volver al inicio","opciones":{"1":"Inicio"}}
+const sinonimos = {
+    "Problemas_sistema": ["sistema", "problema", "error", "fallo", "issue"],
+    "Consultas_servicios": ["servicio", "pago", "abonar", "consulta"],
+    "Promociones": ["promoción", "oferta", "premio", "sorteo"],
+    "Agente_humano": ["agente", "operador", "humano", "persona"]
 };
 
 let nodoActual = "Inicio";
 
-// Enviar mensaje
-const btnEnviar = document.getElementById("sendBtn");
-btnEnviar.onclick = () => {
-    const texto = input.value.trim().toLowerCase();
-    if(!texto) return;
-    mostrarMensaje(input.value,"user");
-    input.value = "";
-    const nodo = chatTree[nodoActual];
-    if(nodo.opciones[texto]) nodoActual = nodo.opciones[texto];
-    mostrarMensaje(chatTree[nodoActual].mensaje,"bot");
-};
-mostrarMensaje(chatTree[nodoActual].mensaje,"bot");
-</script>
+const chatBox = document.getElementById("chatBox");
+const inputField = document.getElementById("inputField");
+const sendBtn = document.getElementById("sendBtn");
 
+function mostrarMensaje(texto, clase = "bot") {
+    const mensajeDiv = document.createElement("div");
+    mensajeDiv.className = `message ${clase}`;
+    mensajeDiv.textContent = texto;
+    chatBox.appendChild(mensajeDiv);
+    chatBox.scrollTop = chatBox.scrollHeight;
+}
+
+function avanzarNodo(nodo) {
+    nodoActual = nodo;
+    mostrarMensaje(chatTree[nodo].mensaje, "bot");
+}
+
+function procesarMensaje(texto) {
+    mostrarMensaje(texto, "user");
+    texto = texto.toLowerCase();
+    let encontrado = false;
+
+    for (let nodo in sinonimos) {
+        for (let palabra of sinonimos[nodo]) {
+            if (texto.includes(palabra)) {
+                avanzarNodo(nodo);
+                encontrado = true;
+                break;
+            }
+        }
+        if (encontrado) break;
+    }
+
+    if (!encontrado) {
+        mostrarMensaje("No entendí tu respuesta. Por favor escribí una palabra clave o número de opción.", "bot");
+    }
+}
+
+mostrarMensaje(chatTree[nodoActual].mensaje);
+
+sendBtn.addEventListener("click", () => {
+    if (inputField.value.trim() !== "") {
+        procesarMensaje(inputField.value);
+        inputField.value = "";
+    }
+});
+
+inputField.addEventListener("keypress", (e) => {
+    if (e.key === "Enter" && inputField.value.trim() !== "") {
+        procesarMensaje(inputField.value);
+        inputField.value = "";
+    }
+});
+</script>
 </body>
 </html>
 
