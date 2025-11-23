@@ -6,7 +6,7 @@
 <style>
 body { font-family: Arial; margin: 0; padding: 0; }
 
-/* Chat flotante (TU CÓDIGO ORIGINAL, NO TOCAR) */
+/* Chat flotante (NO TOCAR) */
 #chatIcon {
     position: fixed;
     bottom: 20px;
@@ -44,45 +44,75 @@ body { font-family: Arial; margin: 0; padding: 0; }
 #chatInput input { flex: 1; border: none; padding: 10px; outline: none; }
 #chatInput button { padding: 10px; border: none; background: #007bff; color: white; cursor: pointer; }
 
-/* BLOQUE ADICIONAL CON TEXTO/IMÁGENES */
+/* BLOQUE ADICIONAL: TEXTO E IMÁGENES */
 #contenidoExtra {
-    position: relative;
-    max-width: 800px;
+    max-width: 900px;
     margin: 50px auto;
     padding: 20px;
     background: #f9f9f9;
     border-radius: 10px;
     box-shadow: 0 2px 6px rgba(0,0,0,0.2);
 }
-#contenidoExtra h2 {
-    margin-top: 0;
+#contenidoExtra h2, #contenidoExtra h3 {
     text-align: center;
+    margin-top: 20px;
+}
+#contenidoExtra p {
+    text-align: center;
+    font-size: 16px;
+    line-height: 1.5;
 }
 #contenidoExtra img {
     display: block;
     width: 100%;
     max-width: 350px;
-    margin: 10px auto;
+    margin: 15px auto;
     border-radius: 8px;
 }
-#contenidoExtra p {
-    text-align: center;
-    font-size: 16px;
+
+/* Secciones adicionales */
+.section {
+    margin: 30px 0;
+    padding: 15px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+}
+.section h3 {
+    margin-top: 0;
 }
 </style>
 </head>
 <body>
 
-<!-- BLOQUE ADICIONAL: TEXTO E IMÁGENES -->
+<!-- BLOQUE ADICIONAL AMPLIADO -->
 <div id="contenidoExtra">
-    <h2>¡Bienvenido a nuestras promociones!</h2>
-    <p>Mirá las ofertas que tenemos para vos este mes.</p>
-    <img src="https://via.placeholder.com/350x150?text=Promo+1" alt="Promoción 1">
-    <img src="https://via.placeholder.com/350x150?text=Promo+2" alt="Promoción 2">
-    <p>No te pierdas nuestras novedades y beneficios exclusivos.</p>
+    <h2>¡Bienvenido a nuestras promociones y novedades!</h2>
+    <p>Mirá todo lo que tenemos para vos este mes. Descubrí nuestras ofertas, beneficios y novedades exclusivas.</p>
+
+    <div class="section">
+        <h3>Promoción Destacada</h3>
+        <img src="https://via.placeholder.com/350x150?text=Promo+1" alt="Promoción 1">
+        <p>Obtené hasta un 50% de descuento en productos seleccionados. Solo por tiempo limitado.</p>
+    </div>
+
+    <div class="section">
+        <h3>Novedades</h3>
+        <img src="https://via.placeholder.com/350x150?text=Novedad+1" alt="Novedad 1">
+        <img src="https://via.placeholder.com/350x150?text=Novedad+2" alt="Novedad 2">
+        <p>Mirá nuestros últimos lanzamientos y actualizaciones de productos. ¡No te lo pierdas!</p>
+    </div>
+
+    <div class="section">
+        <h3>Beneficios Exclusivos</h3>
+        <img src="https://via.placeholder.com/350x150?text=Beneficio+1" alt="Beneficio 1">
+        <p>Registrate y accedé a descuentos especiales, regalos y promociones solo para clientes registrados.</p>
+    </div>
+
+    <p style="margin-top: 30px;">Recordá que podés interactuar con nuestro asistente virtual desde el ícono azul abajo a la derecha para cualquier consulta.</p>
 </div>
 
-<!-- CHAT FLOTANTE (TU CÓDIGO ORIGINAL, NO TOCAR) -->
+<!-- CHAT FLOTANTE ORIGINAL -->
 <div id="chatIcon">💬</div>
 <div id="chatBox">
     <div id="chatContent"></div>
@@ -93,7 +123,7 @@ body { font-family: Arial; margin: 0; padding: 0; }
 </div>
 
 <script>
-// CHAT FLOTANTE (TU CÓDIGO ORIGINAL, NO TOCAR)
+// CHAT FLOTANTE ORIGINAL
 const chatIcon = document.getElementById("chatIcon");
 const chatBox = document.getElementById("chatBox");
 chatIcon.onclick = () => {
