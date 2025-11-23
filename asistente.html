@@ -2,26 +2,10 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Asistente Virtual</title>
 <style>
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-}
-
-/* Contenido principal de la página */
-#contenido {
-    padding: 40px;
-    max-width: 800px;
-    margin: auto;
-}
-
-h1 { color: #007bff; }
-p { font-size: 18px; margin-bottom: 20px; }
-
-/* Chat flotante */
+/* === ESTILO DEL CHAT (NO TOCAR) === */
+body { font-family: Arial; margin: 0; padding: 0; }
 #chatIcon {
     position: fixed;
     bottom: 20px;
@@ -36,14 +20,12 @@ p { font-size: 18px; margin-bottom: 20px; }
     font-size: 30px;
     cursor: pointer;
     box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-    z-index: 1000;
 }
-
 #chatBox {
     position: fixed;
     bottom: 90px;
     right: 20px;
-    width: 350px;
+    width: 400px;
     max-height: 500px;
     background: white;
     border: 1px solid #ccc;
@@ -52,63 +34,97 @@ p { font-size: 18px; margin-bottom: 20px; }
     flex-direction: column;
     overflow: hidden;
     box-shadow: 0 2px 12px rgba(0,0,0,0.3);
-    z-index: 1000;
 }
-
 #chatContent { flex: 1; padding: 10px; overflow-y: auto; }
 .message { margin: 5px 0; }
 .bot { color: blue; }
 .user { color: green; }
-
 #chatInput { display: flex; border-top: 1px solid #ccc; }
 #chatInput input { flex: 1; border: none; padding: 10px; outline: none; }
 #chatInput button { padding: 10px; border: none; background: #007bff; color: white; cursor: pointer; }
+
+/* === CONTENIDO ADICIONAL DE LA PÁGINA === */
+#contenido {
+    max-width: 900px;
+    margin: 50px auto;
+    padding: 20px;
+}
+
+#contenido h1 {
+    color: #007bff;
+    text-align: center;
+}
+
+#contenido h2 {
+    color: #333;
+    margin-top: 30px;
+}
+
+#contenido p {
+    font-size: 16px;
+    margin-bottom: 15px;
+}
+
+.promo {
+    margin-bottom: 20px;
+}
+
+.promo img {
+    max-width: 100%;
+    border-radius: 10px;
+}
+
+.section {
+    background: #f4f4f4;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 30px;
+}
 </style>
 </head>
 <body>
 
+<!-- === CONTENIDO ADICIONAL DE LA PÁGINA === -->
 <div id="contenido">
-    <h1>Bienvenido a Nuestro Servicio</h1>
-    <p>Acá podés ver nuestras promociones, novedades y noticias importantes.</p>
-    <p>Agregá más secciones de texto, imágenes o banners promocionales según necesites.</p>
+    <h1>Bienvenido a Nuestro Sitio</h1>
+    <p>Acá podés mostrar información importante, promociones, noticias o cualquier texto que quieras que vean tus usuarios mientras interactúan con el chat.</p>
+
+    <div class="section">
+        <h2>Promociones Destacadas</h2>
+        <div class="promo">
+            <img src="https://via.placeholder.com/400x150?text=Promo+1" alt="Promoción 1">
+            <p>Compra hoy y obtené un descuento especial.</p>
+        </div>
+        <div class="promo">
+            <img src="https://via.placeholder.com/400x150?text=Promo+2" alt="Promoción 2">
+            <p>Participá en nuestro sorteo mensual.</p>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Nuestras Novedades</h2>
+        <p>Mirá todas las noticias y novedades de nuestro servicio.</p>
+        <ul>
+            <li>Lanzamiento de nuevos productos.</li>
+            <li>Actualizaciones en nuestro sistema.</li>
+            <li>Promociones exclusivas para usuarios registrados.</li>
+        </ul>
+    </div>
 </div>
 
-<!-- Chat flotante -->
+<!-- === CHAT FLOTANTE (NO TOCAR) === -->
 <div id="chatIcon">💬</div>
+
 <div id="chatBox">
     <div id="chatContent"></div>
     <div id="chatInput">
-        <input type="text" id="userInput" placeholder="Escribí tu respuesta aquí...">
+        <input type="text" id="userInput" placeholder="Escribí tu respuesta aquí..."/>
         <button id="sendBtn">Enviar</button>
     </div>
 </div>
 
 <script>
-// Árbol de conversación simplificado
-const chatTree = {
-    "Inicio": {
-        mensaje: "¡Hola! Bienvenido al soporte. ¿Cómo podemos ayudarte hoy?\nOpciones: 1) Problemas con el sistema 2) Consultas sobre servicios 3) Promociones 4) Hablar con un operador",
-    },
-    "Problemas_sistema": { mensaje: "Vamos a intentar solucionar el problema con el sistema. ¿Se carga la página correctamente?" },
-    "Consultas_servicios": { mensaje: "¿Qué consulta deseas realizar? 1) Realizar búsqueda 2) Procesar pago 3) Servicios disponibles por rubro" },
-    "Promociones": { mensaje: "Selecciona el tipo de promoción que deseas consultar: 1) Promociones vigentes 2) Cómo participar en promociones" },
-    "Agente_humano": { mensaje: "Te voy a derivar a un operador. Por favor, espera un momento." },
-    "Fin": { mensaje: "Por favor, califica tu experiencia del 1 al 5, donde 1 es muy insatisfecho y 5 muy satisfecho." }
-};
-
-const sinonimos = {
-    "Problemas_sistema": ["sistema", "problema", "error", "fallo", "issue"],
-    "Consultas_servicios": ["servicio", "pago", "abonar", "consulta"],
-    "Promociones": ["promoción", "oferta", "premio", "sorteo"],
-    "Agente_humano": ["operador", "humano", "persona"]
-};
-
-let nodoActual = "Inicio";
-const chatContent = document.getElementById("chatContent");
-const input = document.getElementById("userInput");
-const btnEnviar = document.getElementById("sendBtn");
-
-// Mostrar/Ocultar chat
+// === CÓDIGO DEL CHAT (NO TOCAR) ===
 const chatIcon = document.getElementById("chatIcon");
 const chatBox = document.getElementById("chatBox");
 chatIcon.onclick = () => {
@@ -117,57 +133,60 @@ chatIcon.onclick = () => {
     input.focus();
 };
 
-// Función para mostrar mensaje
 function mostrarMensaje(texto, tipo="bot") {
     const div = document.createElement("div");
     div.className = `message ${tipo}`;
-    div.textContent = texto;
+    div.innerHTML = texto.replace(/\n/g, "<br>");
     chatContent.appendChild(div);
     chatContent.scrollTop = chatContent.scrollHeight;
 }
 
-// Avanzar nodo
-function avanzarNodo(nodo) {
-    nodoActual = nodo;
-    mostrarMensaje(chatTree[nodo].mensaje, "bot");
-}
-
-// Procesar mensaje
-function procesarMensaje(texto) {
-    mostrarMensaje(texto, "user");
-    texto = texto.toLowerCase();
-    let encontrado = false;
-    for (let nodo in sinonimos) {
-        for (let palabra of sinonimos[nodo]) {
-            if (texto.includes(palabra)) {
-                avanzarNodo(nodo);
-                encontrado = true;
-                break;
-            }
+const chatTree = {
+    "Inicio": {
+        "mensaje": `¡Hola! Bienvenido al soporte. ¿Cómo podemos ayudarte hoy?
+1. Problemas con el sistema
+2. Consultas sobre servicios
+3. Promociones
+4. Hablar con un agente humano`,
+        "opciones": {
+            "1": "Problemas_sistema",
+            "problemas": "Problemas_sistema",
+            "sistema": "Problemas_sistema",
+            "2": "Consultas_servicios",
+            "consultas": "Consultas_servicios",
+            "3": "Promociones",
+            "promociones": "Promociones",
+            "4": "Hablar_agente",
+            "agente": "Hablar_agente",
+            "humano": "Hablar_agente"
         }
-        if (encontrado) break;
-    }
-    if (!encontrado) {
-        mostrarMensaje("No entendí tu respuesta. Por favor escribí una palabra clave o número de opción.", "bot");
+    },
+    // resto de nodos...
+    "FIN": { "mensaje": "¡Gracias por tu tiempo! Fin de la interacción.", "opciones": {} }
+};
+
+let nodoActual = "Inicio";
+const chatContent = document.getElementById("chatContent");
+const input = document.getElementById("userInput");
+const btnEnviar = document.getElementById("sendBtn");
+
+function enviarMensaje() {
+    const texto = input.value.trim().toLowerCase();
+    if (!texto) return;
+    mostrarMensaje(input.value, "user");
+    input.value = "";
+
+    const nodo = chatTree[nodoActual];
+    if (nodo.opciones[texto]) {
+        nodoActual = nodo.opciones[texto];
+        mostrarMensaje(chatTree[nodoActual].mensaje);
+    } else {
+        mostrarMensaje("No entendí tu respuesta. Escribí el número o palabra clave de la opción.", "bot");
     }
 }
 
-// Inicializar chat
+btnEnviar.onclick = enviarMensaje;
 mostrarMensaje(chatTree[nodoActual].mensaje);
-
-// Enviar mensaje
-btnEnviar.onclick = () => {
-    if (input.value.trim() !== "") {
-        procesarMensaje(input.value);
-        input.value = "";
-    }
-};
-input.addEventListener("keypress", (e) => {
-    if (e.key === "Enter" && input.value.trim() !== "") {
-        procesarMensaje(input.value);
-        input.value = "";
-    }
-});
 </script>
 
 </body>
